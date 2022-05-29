@@ -5,8 +5,6 @@ namespace Task_45
         static void Main(string[] args)
         {
             Station route = new Station();
-            TicketOffice sellTickets = new TicketOffice();
-            Train train = new Train();
             bool isWork = true;
             string userInput;
 
@@ -24,14 +22,7 @@ namespace Task_45
 
                     if (userInput == "1")
                     {
-                        Console.SetCursorPosition(0, 15);
-                        route.MakeRoute();
-                        sellTickets.SellTickets(route);
-                        train.MakeTrain(train, sellTickets);
-                        Console.ReadLine();
-                        Console.Clear();
-                        route.DirectionInfo(train, route, sellTickets);
-                        Console.ReadLine();
+                        route.Work();
                         break;
                     }
                     else if (userInput == "2")
@@ -53,6 +44,20 @@ class Station
     public string PlaceDeparture { get; private set; }
     public string PlaceArrival { get; private set; }
 
+    public void Work()
+    {
+        TicketOffice sellTickets = new TicketOffice();
+        Train train = new Train();
+        Console.SetCursorPosition(0, 15);
+        MakeRoute();
+        sellTickets.SellTickets();
+        train.MakeTrain(train, sellTickets);
+        Console.ReadLine();
+        Console.Clear();
+        DirectionInfo(train, sellTickets);
+        Console.ReadLine();
+    }
+
     public void MakeRoute()
     {
         Console.Write("\nСоздание маршрута.\nВведите пункт отправления: ");
@@ -62,10 +67,10 @@ class Station
         Console.WriteLine($"\nМаршрут {PlaceDeparture} - {PlaceArrival} создан");
     }
 
-    public void DirectionInfo(Train train, Station route, TicketOffice tickets)
+    public void DirectionInfo(Train train, TicketOffice tickets)
     {
         Console.SetCursorPosition(0, 0);
-        Console.WriteLine($"Поезд {route.PlaceDeparture} - {route.PlaceArrival} отправляется в путь. Продано {tickets.SoldTickets} билетов. " +
+        Console.WriteLine($"Поезд {PlaceDeparture} - {PlaceArrival} отправляется в путь. Продано {tickets.SoldTickets} билетов. " +
             $"Вагоны рассчитаны на {train.Capacity} пассажиров. В поезде {train.RailwayCarriage} вагонов.");
     }
 }
@@ -73,14 +78,15 @@ class Station
 class TicketOffice
 {
     public int SoldTickets { get; private set; }
-    private Random _random = new Random();
-    int minRandomNumber = 100;
-    int maxRandomNumber = 600;
 
-    public void SellTickets(Station route)
+    public void SellTickets()
     {
-        SoldTickets = _random.Next(minRandomNumber, maxRandomNumber);
-        Console.WriteLine($"\nНа маршрут {route.PlaceDeparture} - {route.PlaceArrival} продано {SoldTickets} билетов.");
+        Random random = new Random();
+        int minSoldTickets = 100;
+        int maxSoldTickets = 600;
+
+        SoldTickets = random.Next(minSoldTickets, maxSoldTickets);
+        Console.WriteLine($"\nНа маршрут продано {SoldTickets} билетов.");
     }
 }
 
@@ -94,22 +100,22 @@ class Train
     public bool ChooseTrainClass()
     {
         string trainClass;
-        Console.WriteLine("\nВведите номер класса поезда: " +
-            "\n1 класс. Люкс - 20 мест в вагоне. " +
-            "\n2 класс. Купе - 30 мест в вагоне. " +
-            "\n3 класс. Эконом - 50 мест в вагоне.");
+        Console.WriteLine("\nВведите класс поезда: " +
+            "\nЛюкс - 20 мест в вагоне. " +
+            "\nКупе - 30 мест в вагоне. " +
+            "\nЭконом - 50 мест в вагоне.");
         trainClass = Console.ReadLine();
         switch (trainClass)
         {
-            case "1":
+            case "Люкс":
                 Capacity = capacityFirstClass;
                 return false;
 
-            case "2":
+            case "Купе":
                 Capacity = capacitySecondClass;
                 return false;
 
-            case "3":
+            case "Эконом":
                 Capacity = capacityEconomyClass;
                 return false;
 
