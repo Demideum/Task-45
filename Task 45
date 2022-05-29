@@ -20,118 +20,120 @@ namespace Task_45
                 userInput = Console.ReadLine();
                 Console.Clear();
 
-                switch (userInput)
-                {
-                    case "1":
+                while (isWork)
+
+                    if (userInput == "1")
+                    {
                         Console.SetCursorPosition(0, 15);
-                        route.MakeRoute(); 
-                        sellTickets.SellTickets(route); 
-                        train.MakeTrain(train, sellTickets); 
+                        route.MakeRoute();
+                        sellTickets.SellTickets(route);
+                        train.MakeTrain(train, sellTickets);
                         Console.ReadLine();
                         Console.Clear();
-                        route.DirectionInfo(train, route, sellTickets); 
+                        route.DirectionInfo(train, route, sellTickets);
                         Console.ReadLine();
                         break;
-                        
-                    case "2":
+                    }
+                    else if (userInput == "2")
+                    {
                         isWork = false;
+                    }
+                    else
+                    {
+                        Console.WriteLine("\nДанные не корректны.");
                         break;
-                        
-                    default:
-                        Console.WriteLine("\nДанные не корректны");
-                        break;
-                }
+                    }
             }
         }
     }
+}
 
-    class Station
+class Station
+{
+    public string PlaceDeparture { get; private set; }
+    public string PlaceArrival { get; private set; }
+
+    public void MakeRoute()
     {
-        public string PlaceDeparture { get; private set; }
-        public string PlaceArrival { get; private set; }
+        Console.Write("\nСоздание маршрута.\nВведите пункт отправления: ");
+        PlaceDeparture = Console.ReadLine();
+        Console.Write("\nВведите пункт прибытия: ");
+        PlaceArrival = Console.ReadLine();
+        Console.WriteLine($"\nМаршрут {PlaceDeparture} - {PlaceArrival} создан");
+    }
 
-        public void MakeRoute()
-        {
-            Console.Write("\nСоздание маршрута.\nВведите пункт отправления: ");
-            PlaceDeparture = Console.ReadLine();
-            Console.Write("\nВведите пункт прибытия: ");
-            PlaceArrival = Console.ReadLine();
-            Console.WriteLine($"\nМаршрут {PlaceDeparture} - {PlaceArrival} создан");
-        }
+    public void DirectionInfo(Train train, Station route, TicketOffice tickets)
+    {
+        Console.SetCursorPosition(0, 0);
+        Console.WriteLine($"Поезд {route.PlaceDeparture} - {route.PlaceArrival} отправляется в путь. Продано {tickets.SoldTickets} билетов. " +
+            $"Вагоны рассчитаны на {train.Capacity} пассажиров. В поезде {train.RailwayCarriage} вагонов.");
+    }
+}
 
-        public void DirectionInfo(Train train, Station route, TicketOffice tickets)
+class TicketOffice
+{
+    public int SoldTickets { get; private set; }
+    private Random _random = new Random();
+    int minRandomNumber = 100;
+    int maxRandomNumber = 600;
+
+    public void SellTickets(Station route)
+    {
+        SoldTickets = _random.Next(minRandomNumber, maxRandomNumber);
+        Console.WriteLine($"\nНа маршрут {route.PlaceDeparture} - {route.PlaceArrival} продано {SoldTickets} билетов.");
+    }
+}
+
+class Train
+{
+    public int RailwayCarriage { get; internal set; }
+    public int Capacity { get; private set; }
+    private const int capacityFirstClass = 20;
+    private const int capacitySecondClass = 30;
+    private const int capacityEconomyClass = 50;
+    public bool ChooseTrainClass()
+    {
+        string trainClass;
+        Console.WriteLine("\nВведите номер класса поезда: " +
+            "\n1 класс. Люкс - 20 мест в вагоне. " +
+            "\n2 класс. Купе - 30 мест в вагоне. " +
+            "\n3 класс. Эконом - 50 мест в вагоне.");
+        trainClass = Console.ReadLine();
+        switch (trainClass)
         {
-            Console.SetCursorPosition(0, 0);
-            Console.WriteLine($"Поезд {route.PlaceDeparture} - {route.PlaceArrival} отправляется в путь. Продано {tickets.SoldTickets} билетов. " +
-                $"Вагоны рассчитаны на {train.Capacity} пассажиров. В поезде {train.RailwayCarriage} вагонов.");
+            case "1":
+                Capacity = capacityFirstClass;
+                return false;
+
+            case "2":
+                Capacity = capacitySecondClass;
+                return false;
+
+            case "3":
+                Capacity = capacityEconomyClass;
+                return false;
+
+            default:
+                Console.WriteLine("Ввод неверный. Повторите ввод.");
+                return true;
         }
     }
 
-    class TicketOffice
+    public void MakeTrain(Train train, TicketOffice tickets)
     {
-        public int SoldTickets { get; private set; }
-        private Random _random = new Random();
-        int minRandomNumber = 100;
-        int maxRandomNumber = 600;
-
-        public void SellTickets(Station route)
+        while (ChooseTrainClass())
         {
-            SoldTickets = _random.Next(minRandomNumber, maxRandomNumber);
-            Console.WriteLine($"\nНа маршрут {route.PlaceDeparture} - {route.PlaceArrival} продано {SoldTickets} билетов.");
-        }
-    }
-
-    class Train
-    {
-        public int RailwayCarriage { get; internal set; }
-        public int Capacity { get; private set; }
-        private const int capacityFirstClass = 20;
-        private const int capacitySecondClass = 30;
-        private const int capacityEconomyClass = 50;
-        public bool ChooseTrainClass()
-        {
-            string trainClass;
-            Console.WriteLine("\nВведите номер класса поезда: " +
-                "\n1 класс. Люкс - 20 мест в вагоне. " +
-                "\n2 класс. Купе - 30 мест в вагоне. " +
-                "\n3 класс. Эконом - 50 мест в вагоне.");
-            trainClass = Console.ReadLine();
-            switch (trainClass)
-            {
-                case "1":
-                    Capacity = capacityEconomyClass;
-                    return false;
-
-                case "2":
-                    Capacity = capacitySecondClass;
-                    return false;
-
-                case "3":
-                    Capacity = capacityFirstClass;
-                    return false;
-
-                default:
-                    Console.WriteLine("Ввод неверный. Повторите ввод.");
-                    return true;
-            }
+            ChooseTrainClass();
         }
 
-        public void MakeTrain(Train train, TicketOffice tickets)
+        if (tickets.SoldTickets % Capacity != 0)
         {
-            while (ChooseTrainClass())
-            {
-                ChooseTrainClass();
-            }
-
-            if (tickets.SoldTickets % Capacity != 0)
-            {
-                train.RailwayCarriage = tickets.SoldTickets / Capacity + 1;
-            }
-            else
-            {
-                train.RailwayCarriage = tickets.SoldTickets / Capacity;
-            }
-            Console.WriteLine($"\nК отправке готовится поезд из {train.RailwayCarriage} вагонов. Вместительность каждого вагона - {Capacity}.");
+            train.RailwayCarriage = tickets.SoldTickets / Capacity + 1;
         }
+        else
+        {
+            train.RailwayCarriage = tickets.SoldTickets / Capacity;
+        }
+        Console.WriteLine($"\nК отправке готовится поезд из {train.RailwayCarriage} вагонов. Вместительность каждого вагона - {Capacity}.");
     }
 }
