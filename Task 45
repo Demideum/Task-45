@@ -18,22 +18,20 @@ namespace Task_45
                 userInput = Console.ReadLine();
                 Console.Clear();
 
-                while (isWork)
-
-                    if (userInput == "1")
-                    {
+                switch (userInput)
+                {
+                    case "1":
                         route.Work();
                         break;
-                    }
-                    else if (userInput == "2")
-                    {
+
+                    case "2":
                         isWork = false;
-                    }
-                    else
-                    {
-                        Console.WriteLine("\nДанные не корректны.");
                         break;
-                    }
+
+                    default:
+                        Console.WriteLine("Ввод неверный. Повторите ввод.");
+                        break;
+                }
             }
         }
     }
@@ -92,44 +90,45 @@ class TicketOffice
 
 class Train
 {
+    private const int CapacityFirstClass = 20;
+    private const int CapacitySecondClass = 30;
+    private const int CapacityEconomyClass = 50;
     public int RailwayCarriage { get; internal set; }
     public int Capacity { get; private set; }
-    private const int capacityFirstClass = 20;
-    private const int capacitySecondClass = 30;
-    private const int capacityEconomyClass = 50;
-    public bool ChooseTrainClass()
-    {
-        string trainClass;
-        Console.WriteLine("\nВведите класс поезда: " +
-            "\nЛюкс - 20 мест в вагоне. " +
-            "\nКупе - 30 мест в вагоне. " +
-            "\nЭконом - 50 мест в вагоне.");
-        trainClass = Console.ReadLine();
-        switch (trainClass)
-        {
-            case "Люкс":
-                Capacity = capacityFirstClass;
-                return false;
-
-            case "Купе":
-                Capacity = capacitySecondClass;
-                return false;
-
-            case "Эконом":
-                Capacity = capacityEconomyClass;
-                return false;
-
-            default:
-                Console.WriteLine("Ввод неверный. Повторите ввод.");
-                return true;
-        }
-    }
 
     public void MakeTrain(Train train, TicketOffice tickets)
     {
-        while (ChooseTrainClass())
+        string trainClass;
+        bool isMakeTrain = true;
+
+        Console.WriteLine($"\nВведите класс поезда: " +
+            $"\nЛюкс - {CapacityFirstClass} мест в вагоне. " +
+            $"\nКупе - {CapacitySecondClass} мест в вагоне. " +
+            $"\nЭконом - {CapacityEconomyClass} мест в вагоне.");
+
+        while (isMakeTrain)
         {
-            ChooseTrainClass();
+            trainClass = Console.ReadLine();
+
+            if (trainClass == "Люкс")
+            {
+                Capacity = CapacityFirstClass;
+                isMakeTrain = false;
+            }
+            else if (trainClass == "Купе")
+            {
+                Capacity = CapacitySecondClass;
+                isMakeTrain = false;
+            }
+            else if (trainClass == "Эконом")
+            {
+                Capacity = CapacityEconomyClass;
+                isMakeTrain = false;
+            }
+            else
+            {
+                Console.WriteLine("Ввод неверный. Повторите ввод.");
+            }
         }
 
         if (tickets.SoldTickets % Capacity != 0)
